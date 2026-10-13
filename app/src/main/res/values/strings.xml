@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">LabelPrinter</string>
+    <string name="app_name">Címkenyomtató</string>
+    <string name="field_name">Név</string>
+    <string name="field_city">Város</string>
+    <string name="field_street">Utca, házszám</string>
+    <string name="error_required">Kötelező mező</string>
+    <string name="char_counter">%1$d / %2$d</string>
+    <string name="preview_title">Nyomtatási előnézet</string>
+    <string name="label_size">Címkeméret: %1$d × %2$d mm</string>
+    <string name="print_button">Nyomtat</string>
+    <string name="error_printing_unavailable">A nyomtatás nem érhető el ezen az eszközön.</string>
+    <string name="error_print_failed">Nem sikerült elindítani a nyomtatást: %1$s</string>
 </resources>
