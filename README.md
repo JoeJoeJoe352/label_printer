@@ -11,26 +11,24 @@ Hódmezővásárhely
 Andrássy út 12.
 ```
 
-## Fordítás és telepítés
-1. Nyisd meg a projektet Android Studióban, és várd meg a Gradle-szinkront.
-2. Futtatás: válassz eszközt vagy emulátort, majd **Run ▶**.
-3. APK: **Build → Generate App Bundles or APKs → Generate APKs**. A fájl az
-   `app/build/outputs/apk/debug/app-debug.apk` helyre kerül.
+## Telepítés
 
-Parancssorból:
+A lefordított alkalmazás a repó `apk/LabelPrinter.apk` fájlja, amely Android 8.0
+vagy újabb telefonra és tabletre telepíthető. A telepítéshez az eszközön
+engedélyezni kell az ismeretlen forrásból származó alkalmazások telepítését.
 
-```bash
-./gradlew assembleDebug        # APK
-./gradlew testDebugUnitTest    # unit tesztek
-```
+## Feltételezések
 
-- A repoban az apk mappában megtalálható a lefordított apk file, ezt lehet telepíteni android telefonokra
+- **Felhasználási környezet.** Mivel a feladat nem tért ki rá konkrétan, egy
+  raktári munkát segítő alkalmazásként képzeltem el, amellyel a raktáros
+  címkéket tud nyomtatni a dobozokra.
+- **Nyomtató.** A feladat nem adja meg a címkenyomtató típusát és a kapcsolat
+  módját, ezért az alkalmazás nem egy konkrét nyomtatóhoz készült, hanem az
+  Android beépített nyomtatási rendszerét használja (lásd lent).
+- **Címkeméret.** Alapból 62 × 29 mm (Brother DK-11209), ez a `LabelSpec`-ben
+  átállítható.
 
-### Feltételezések
-Mivel a feladat nem tért ki rá konkrétan, ezért én egy raktári munkát segítő alkalmazásként képzeltem el, 
-amivel a raktáros címkéket tud nyomtatni dobozokra. 
-
-### Bevitel
+## Működés
 
 - Mezőnként legfeljebb 32 karakter, a mező alatt számláló mutatja (pl. `12 / 32`).
 - Minden mező egy sor a címkén: a beillesztett sortörések szóközzé alakulnak,
@@ -43,16 +41,10 @@ amivel a raktáros címkéket tud nyomtatni dobozokra.
   kijelzőn minden egymás alatt van.
 - Hosszú szövegnél a betűméret automatikusan csökken, hogy a sor kiférjen a címkére.
 
-## Technológia
+## Nyomtatási megoldás
 
-- Kotlin, Jetpack Compose (Material 3)
-- minSdk 26 (Android 8.0), targetSdk 37
-- Külső függőség nincs, csak az Android SDK és az AndroidX alapkönyvtárak
-
-## Nyomtatási megoldás és feltételezések
-
-A feladat nem adja meg a címkenyomtató típusát és a kapcsolat módját, ezért az
-alkalmazás az **Android beépített nyomtatási rendszerét** (`PrintManager`) használja:
+Az alkalmazás az **Android beépített nyomtatási rendszerét** (`PrintManager`)
+használja:
 
 - **Gyártófüggetlen.** Bármilyen nyomtatóval működik, amelyhez telepítve van
   Android nyomtatási szolgáltatás (pl. *Brother Print Service Plugin*,
@@ -64,9 +56,8 @@ alkalmazás az **Android beépített nyomtatási rendszerét** (`PrintManager`) 
   ez külön kódlap-beállítást igényelne.)
 - **Az előnézet és a nyomat egyezik.** A képernyős előnézet és a PDF ugyanazt a
   `LabelRenderer`-t használja.
-- **Címkeméret.** Alapból 62 × 29 mm (Brother DK-11209), a `LabelSpec`-ben
-  átállítható. A rendszer párbeszédablakában a nyomtató saját méretei közül is
-  lehet választani. A tartalom az arányokat megtartva igazodik a kiválasztott
+- **Papírméret.** A rendszer párbeszédablakában a nyomtató saját méretei közül
+  is lehet választani. A tartalom az arányokat megtartva igazodik a kiválasztott
   papírhoz, a betűméret pedig úgy skálázódik, hogy a leghosszabb sor is kiférjen.
 
 ### Bővíthetőség
@@ -75,6 +66,40 @@ A felület csak a `LabelPrinter` interfészt ismeri. Ha a cél egy konkrét
 nyomtató (pl. Brother SDK, Zebra Link-OS / ZPL hálózaton a 9100-as porton vagy
 Bluetooth ESC/POS), elég egy új megvalósítást írni, és azt átadni a
 `MainActivity`-ben. A felülethez nem kell hozzányúlni.
+
+## Hibakezelés
+
+- Üres mező esetén a mező alatt hibaüzenet jelenik meg, és a nyomtatás nem indul el.
+- Ha az eszközön nem érhető el a nyomtatási szolgáltatás, vagy a nyomtatás nem
+  indítható, az alkalmazás nem omlik össze, hanem érthető üzenetet mutat
+  (snackbar).
+- A már elindított nyomtatási feladat állapotáról (sorban áll, kész, hiba)
+  az Android rendszerértesítést küld.
+
+## Tesztelés nyomtató nélkül
+
+A **Nyomtat** gomb után a rendszer párbeszédablakában válaszd a
+**Mentés PDF-ként** lehetőséget. A kapott PDF pontosan az, amit a nyomtató kapna.
+
+## Technológia
+
+- Kotlin, Jetpack Compose (Material 3)
+- minSdk 26 (Android 8.0), targetSdk 37
+- Külső függőség nincs, csak az Android SDK és az AndroidX alapkönyvtárak
+
+## Fordítás
+
+1. Nyisd meg a projektet Android Studióban, és várd meg a Gradle-szinkront.
+2. Futtatás: válassz eszközt vagy emulátort, majd **Run ▶**.
+3. APK: **Build → Generate App Bundles or APKs → Generate APKs**. A fájl az
+   `app/build/outputs/apk/debug/app-debug.apk` helyre kerül.
+
+Parancssorból (Windowson `gradlew.bat`):
+
+```bash
+./gradlew assembleDebug        # APK
+./gradlew testDebugUnitTest    # unit tesztek
+```
 
 ## Szerkezet
 
@@ -88,23 +113,15 @@ app/src/main/java/com/example/labelprinter/
 │   ├── LabelPrintAdapter.kt     – egyoldalas PDF előállítása a nyomtatáshoz
 │   ├── LabelRenderer.kt         – közös rajzoló az előnézethez és a nyomtatáshoz
 │   └── LabelSpec.kt             – címkeméret
-└── ui/LabelScreen.kt            – az egyetlen képernyő (fejléc, beviteli mezők, előnézet, Nyomtat gomb)
+└── ui/
+    ├── LabelScreen.kt           – az egyetlen képernyő (fejléc, beviteli mezők, előnézet, Nyomtat gomb)
+    └── theme/                   – színek, betűtípusok, téma
+
+app/src/test/java/com/example/labelprinter/
+└── LabelDataTest.kt             – unit tesztek (hosszkorlát, tisztítás, kötelező mezők)
 ```
 
-## Tesztelés nyomtató nélkül
-
-A **Nyomtat** gomb után a rendszer párbeszédablakában válaszd a
-**Mentés PDF-ként** lehetőséget. A kapott PDF pontosan az, amit a nyomtató kapna.
-
-## Hibakezelés
-
-- Ha az eszközön nem érhető el a nyomtatási szolgáltatás, vagy a nyomtatás nem
-  indítható, az alkalmazás nem omlik össze, hanem érthető üzenetet mutat
-  (snackbar).
-- A már elindított nyomtatási feladat állapotáról (sorban áll, kész, hiba)
-  az Android rendszerértesítést küld.
-
 ## Képernyőképek
-![Álló kép](https://github.com/user-attachments/assets/c7357559-25c6-4a91-856d-9beea15f2f40)
+![Telefon, álló nézet](https://github.com/user-attachments/assets/c7357559-25c6-4a91-856d-9beea15f2f40)
 
-![Fekvő kép](https://github.com/user-attachments/assets/ae455424-e1bc-4684-b170-73948d0b9ea4)
+![Fekvő nézet](https://github.com/user-attachments/assets/ae455424-e1bc-4684-b170-73948d0b9ea4)
