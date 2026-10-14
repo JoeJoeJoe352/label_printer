@@ -14,14 +14,14 @@ data class LabelData(
     /** Igaz, ha mindhárom mező ki van töltve – csak ilyenkor nyomtatható. */
     val isComplete: Boolean get() = lines.none { it.isBlank() }
 
-    /** Nyomtatáshoz előkészített példány: a sorok elején/végén lévő szóközök nélkül. */
+    /** Nyomtatáshoz előkészített példány, trim-elve. */
     fun trimmed(): LabelData = LabelData(name.trim(), city.trim(), street.trim())
 
     companion object {
         /** Egy mező legfeljebb ennyi karakter lehet. */
         const val MAX_LENGTH = 32
 
-        /** Kezdőértékek, hogy induláskor is legyen mit megnézni az előnézetben. */
+        /** Form kezdőértékek. */
         val Sample = LabelData(
             name = "",
             city = "",

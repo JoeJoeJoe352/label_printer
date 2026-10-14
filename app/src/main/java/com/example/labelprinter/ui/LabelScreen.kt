@@ -263,7 +263,7 @@ private fun PrintButton(onClick: () -> Unit) {
     }
 }
 
-/** Egysoros beviteli mező karakterszámlálóval (pl. „12 / 64”). */
+/** Egysoros beviteli mező karakterszámlálóval (pl. „12 / 32”). */
 @Composable
 private fun LabelField(
     value: String,
