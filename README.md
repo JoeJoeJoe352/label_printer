@@ -2,7 +2,7 @@
 
 Egyképernyős Android-alkalmazás telefonra és tabletre. Három beviteli mezőben
 megadható a **név**, a **város** és az **utca, házszám** (mezőnként legfeljebb
-64 karakter). Alattuk élő előnézet mutatja a címkét, a **Nyomtat** gombbal pedig
+32 karakter). Alattuk élő előnézet mutatja a címkét, a **Nyomtat** gombbal pedig
 a három sor kinyomtatható, például:
 
 ```
@@ -11,18 +11,32 @@ Hódmezővásárhely
 Andrássy út 12.
 ```
 
-Induláskor a mezőkben ez a mintaadat áll (`LabelData.Sample`), így azonnal
-kipróbálható.
+## Fordítás és telepítés
+1. Nyisd meg a projektet Android Studióban, és várd meg a Gradle-szinkront.
+2. Futtatás: válassz eszközt vagy emulátort, majd **Run ▶**.
+3. APK: **Build → Generate App Bundles or APKs → Generate APKs**. A fájl az
+   `app/build/outputs/apk/debug/app-debug.apk` helyre kerül.
+
+Parancssorból:
+
+```bash
+./gradlew assembleDebug        # APK
+./gradlew testDebugUnitTest    # unit tesztek
+```
+
+- A repoban az apk mappában megtalálható a lefordított apk file, ezt lehet telepíteni android telefonokra
+
+### Feltételezések
+Mivel a feladat nem tért ki rá konkrétan, ezért én egy raktári munkát segítő alkalmazásként képzeltem el, 
+amivel a raktáros címkéket tud nyomtatni dobozokra. 
 
 ### Bevitel
 
-- Mezőnként legfeljebb 64 karakter, a mező alatt számláló mutatja (pl. `12 / 64`).
+- Mezőnként legfeljebb 32 karakter, a mező alatt számláló mutatja (pl. `12 / 32`).
 - Minden mező egy sor a címkén: a beillesztett sortörések szóközzé alakulnak,
   a szélső szóközök nyomtatás előtt levágódnak.
 - Mindhárom mező kötelező. Ha egy mező üres (vagy csak szóközt tartalmaz),
   alatta „Kötelező mező” hibaüzenet jelenik meg, és a nyomtatás nem indul el.
-  A hiba akkor látszik, ha a mezőt már szerkesztették, vagy a **Nyomtat**
-  gombot megnyomták, így induláskor nincs piros mező.
 - Képernyőforgatáskor a beírt adatok megmaradnak.
 - Tableten (és fekvő telefonon, 600 dp szélesség felett) két oszlop van: bal
   oldalt a mezők és alattuk a Nyomtat gomb, jobb oldalt az előnézet. Keskeny
@@ -77,20 +91,6 @@ app/src/main/java/com/example/labelprinter/
 └── ui/LabelScreen.kt            – az egyetlen képernyő (fejléc, beviteli mezők, előnézet, Nyomtat gomb)
 ```
 
-## Fordítás és telepítés
-
-1. Nyisd meg a projektet Android Studióban, és várd meg a Gradle-szinkront.
-2. Futtatás: válassz eszközt vagy emulátort, majd **Run ▶**.
-3. APK: **Build → Generate App Bundles or APKs → Generate APKs**. A fájl az
-   `app/build/outputs/apk/debug/app-debug.apk` helyre kerül.
-
-Parancssorból:
-
-```bash
-./gradlew assembleDebug        # APK
-./gradlew testDebugUnitTest    # unit tesztek
-```
-
 ## Tesztelés nyomtató nélkül
 
 A **Nyomtat** gomb után a rendszer párbeszédablakában válaszd a
@@ -103,3 +103,8 @@ A **Nyomtat** gomb után a rendszer párbeszédablakában válaszd a
   (snackbar).
 - A már elindított nyomtatási feladat állapotáról (sorban áll, kész, hiba)
   az Android rendszerértesítést küld.
+
+## Képernyőképek
+![Álló kép](https://github.com/user-attachments/assets/c7357559-25c6-4a91-856d-9beea15f2f40)
+
+![Fekvő kép](https://github.com/user-attachments/assets/ae455424-e1bc-4684-b170-73948d0b9ea4)
